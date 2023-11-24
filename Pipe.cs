@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Input;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
-namespace Pong
+namespace FlappyBirdCSharp
 {
      class Pipes
     {
