@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Timers;
 
-namespace Pong
+namespace FlappyBirdCSharp
 {
     public class Game1 : Game
     {
