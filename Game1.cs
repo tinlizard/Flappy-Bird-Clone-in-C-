@@ -16,8 +16,7 @@ namespace FlappyBirdCSharp
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
-        private Texture2D texture;
-        private Texture2D backgroundTexture;
+        private Texture2D backgroundTexture; 
         private Vector2 backgroundPos;
         private Vector2 position;
         private Vector2 spritePos; 
@@ -26,31 +25,27 @@ namespace FlappyBirdCSharp
 
         
         private Rectangle[] sourceRectangles;
-        private int previousAnimationIndex;
         private int currentAnimationIndex = 0;
         private bool isAnimating = false;
         private float drawTimer = 0f;
-        private const float drawInterval = 1f; // 1 second
+        private const float drawInterval = 0.1f; // 1 second
   
         private Texture2D bottomPipeSprite;
         private Texture2D topPipeSprite;
-	private Vector2 topPipeSpriteVector;
-	private Vector2 bottomPipeSpriteVector;
+		
 
         private Pipes topPipe;
         private Pipes bottomPipe;
 	private Rectangle topPipeRect;
-	private Rectangle bottomPipeRect;
 	private List<Pipes> topPipesList;
         private List<Pipes> bottomPipesList;
         private List<Texture2D> topPipeTexturesList;
         private List<Texture2D> bottomPipeTexturesList;
         private bool isIntersecting = false;
-        private const int numberOfPipes = 10;
+        private const int numberOfPipes = 5;
 
 	private int initialXPosition = 295; // Starting X position for the first pipe
-	private const int pipeSpacing = 200; // Space between each pipe
-	private const int pipeStartPosition = 295;
+	private const int pipeSpacing = 90; // Space between each pipe
 
 	protected bool Collide()
         {
@@ -73,7 +68,7 @@ namespace FlappyBirdCSharp
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            //Set screen width and height
             graphics.PreferredBackBufferWidth = 288;
             graphics.PreferredBackBufferHeight = 480;
             graphics.ApplyChanges();
@@ -84,22 +79,22 @@ namespace FlappyBirdCSharp
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            //Load background textures
             backgroundTexture = Content.Load<Texture2D>("background-day");
             backgroundPos = new Vector2(0, 0);
-            texture = Content.Load<Texture2D>("yellowbird-midflap");
-            position = new Vector2(graphics.PreferredBackBufferWidth/2-20, graphics.PreferredBackBufferHeight);
+
+            //Load bird spritesheet
             spriteSheet = Content.Load<Texture2D>("yellow_bird_spritesheet");
             spritePos = new Vector2(120, 0);
 
-
+            //create sourceRectangles elements
             sourceRectangles = new Rectangle[3];
             sourceRectangles[0] = new Rectangle(0, 0, 35, 64);
             sourceRectangles[1] = new Rectangle(34, 0, 35, 64);
             sourceRectangles[2] = new Rectangle(69, 0, 35, 64);
          
-            previousAnimationIndex = 2;
 
+            //load pipe sprite
 			topPipeSprite = Content.Load<Texture2D>("top_pipe_green");
 			bottomPipeSprite = Content.Load<Texture2D>("pipe-green");
 
@@ -108,32 +103,22 @@ namespace FlappyBirdCSharp
             topPipeTexturesList = new List<Texture2D>();
             bottomPipeTexturesList = new List<Texture2D>();
 
-			for (int i = 0; i < numberOfPipes; i++)
-			{
-				topPipe = new Pipes(initialXPosition + (i * pipeSpacing), 0, 52, 335, 5);
-				bottomPipe = new Pipes(initialXPosition + (i * pipeSpacing), 0, 52, 335, 5);
-				topPipesList.Add(topPipe);
-				bottomPipesList.Add(bottomPipe);
-				topPipe.PipeSpritePosVector = new Vector2(topPipe.x, topPipe.topPipeY);
-				bottomPipe.BottomPipeSpritePosVector = new Vector2(topPipe.x, bottomPipe.bottomPipeY);
-				bottomPipeTexturesList.Add(bottomPipeSprite);
-				topPipeTexturesList.Add(topPipeSprite);
-			}
         }
 
         protected override void Update(GameTime gameTime)
         {
+            //pull bird down
             position.Y += gravity;
             spritePos.Y += gravity;
 
 
-	    Collide();
+			Collide();
 
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-        
+            //if the space key is pressed, pull the bird up and set isAnimating to true
             if (Keyboard.GetState().IsKeyDown(Keys.Space))
             {
                 position.Y -= gravity+2; 
@@ -142,7 +127,9 @@ namespace FlappyBirdCSharp
 
             }
 
-            if (isAnimating)
+            /*if isAnimating is true and drawTimer is greater than 0.2 seconds, and reset the drawTimer and reset the 
+             currentAnimationIndex*/
+            if (isAnimating && (drawTimer>drawInterval))
             {
                 currentAnimationIndex++;
                 if (currentAnimationIndex >= sourceRectangles.Length)
@@ -150,41 +137,58 @@ namespace FlappyBirdCSharp
                     isAnimating = false;
                     currentAnimationIndex = 0;
                 }
+                drawTimer = 0;
             }
 
-
+            //if the bird y position is greater than 516, set the bird height to halfway down the screen
             if (position.Y >516)
             {
                 position.Y= graphics.PreferredBackBufferHeight/2;
                 spritePos.Y = graphics.PreferredBackBufferWidth/2;
             }
 
+            //create ten pipes 
+	    for (int i = 0; i < numberOfPipes; i++)
+	    {
+                /*create new instance of pipe, add top pipes to top pipes list, then set the topPipe vector, and set the 
+                 sprites to the textures list. Do the same for the bottom pipes.*/
+		topPipe = new Pipes(initialXPosition + (i * pipeSpacing), 0, 52, 335, 5);
+		bottomPipe = new Pipes(initialXPosition + (i * pipeSpacing), 0, 52, 335, 5);
+		topPipesList.Add(topPipe);
+		bottomPipesList.Add(bottomPipe);
+		topPipe.PipeSpritePosVector = new Vector2(topPipe.x, topPipe.topPipeY);
+		bottomPipe.BottomPipeSpritePosVector = new Vector2(topPipe.x, bottomPipe.bottomPipeY);
+		bottomPipeTexturesList.Add(bottomPipeSprite);
+		topPipeTexturesList.Add(topPipeSprite);
+	   }
 
+            //for every pipe in topPipesList, update the position of the topPipes
+	    foreach (Pipes pipe in topPipesList)
+	    {
+	    // Update the X position
+	    Vector2 newPosition = new Vector2(pipe.PipeSpritePosVector.X - 2, pipe.PipeSpritePosVector.Y);
+	    pipe.PipeSpritePosVector = newPosition;
 
-			foreach (Pipes pipe in topPipesList)
+	    // Reset the position if the X coordinate is less than 0
+	   	 if (pipe.PipeSpritePosVector.X < 0)
+	   	 {
+	      		pipe.PipeSpritePosVector = new Vector2(pipe.x, pipe.PipeSpritePosVector.Y);
+	     	 }
+	}
+
+            //same code but for bottom pipes
+			foreach (Pipes pipe in bottomPipesList)
 			{
 				// Update the X position
-				Vector2 newPosition = new Vector2(pipe.PipeSpritePosVector.X - 2, pipe.PipeSpritePosVector.Y);
+				Vector2 newPosition = new Vector2(pipe.PipeSpritePosVector.X - 2, pipe.BottomPipeSpritePosVector.Y);
 				pipe.PipeSpritePosVector = newPosition;
 
 				// Reset the position if the X coordinate is less than 0
 				if (pipe.PipeSpritePosVector.X < 0)
 				{
-					pipe.PipeSpritePosVector = new Vector2(pipeStartPosition, pipe.PipeSpritePosVector.Y);
+					pipe.PipeSpritePosVector = new Vector2(pipe.x , pipe.BottomPipeSpritePosVector.Y);
 				}
 			}
-
-
-			foreach (Pipes pipe in bottomPipesList)
-			{
-				Vector2 newPosition = new Vector2(pipe.PipeSpritePosVector.X - 2, pipe.BottomPipeSpritePosVector.Y);
-				pipe.PipeSpritePosVector = newPosition;
-				if (pipe.PipeSpritePosVector.X < 0)
-				{
-					pipe.PipeSpritePosVector = new Vector2(pipeStartPosition, pipe.BottomPipeSpritePosVector.Y);
-				}
-			}
-
 
 			//call the updatePipeLocation method from the Pipes class in Pipes.cs
 			drawTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -196,27 +200,33 @@ namespace FlappyBirdCSharp
             GraphicsDevice.Clear(Color.CornflowerBlue);
             Rectangle sourceRectangle = new Rectangle(0, 0, 35, 64);
 
+            //begine the spriteBatch instance and start drawing
             spriteBatch.Begin();
             spriteBatch.Draw(backgroundTexture,backgroundPos,Color.White);
 
 
 
-			// Draw only if the timer has reached the interval
+			//Draw the currentAnimationIndex of the sourceRectangles when space is pressed
 			if (Keyboard.GetState().IsKeyDown(Keys.Space))
             {
                 spriteBatch.Draw(spriteSheet, spritePos, sourceRectangles[currentAnimationIndex], Color.White);
             }
-            else if(!(Keyboard.GetState().IsKeyDown(Keys.Space)) && isAnimating == false)
+            //If the space key is pressed and is animating is false, draw only the first index of the sourceRectangle
+            else if(!(Keyboard.GetState().IsKeyDown(Keys.Space)))
             {
                 spriteBatch.Draw(spriteSheet, spritePos, sourceRectangles[0],Color.White);
             }
 
+            //draw each element in the topPipesTexturesList list and bottomPipeTexturesList
 			for (int i = 0; i < numberOfPipes; i++)
 			{
+				
 				spriteBatch.Draw(topPipeTexturesList[i], topPipesList[i].PipeSpritePosVector, Color.White);
 				spriteBatch.Draw(bottomPipeTexturesList[i], bottomPipesList[i].PipeSpritePosVector, Color.White);
+				
 			}
 
+            //end drawing
 			spriteBatch.End();
 
 
