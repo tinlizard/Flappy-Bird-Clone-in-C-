@@ -24,6 +24,9 @@ namespace FlappyBirdCSharp
         public int distanceBetweenPipes;
         public Rectangle topPipe;
         public Rectangle bottomPipe;
+        public List<Rectangle> bottomRectanglesList= new List<Rectangle>();
+        public List<Rectangle> topRectanglesList = new List<Rectangle>();
+        private int pipeSpacing;
         public Rectangle BottomPipe
         {
             get { return bottomPipe; }
@@ -37,19 +40,26 @@ namespace FlappyBirdCSharp
         public int width;
         public int height;
         private Vector2 pipeSpritePosVector;
+        private Vector2 bottomPipeSpritePosVector;
 
         public Vector2 PipeSpritePosVector
         {
             get { return pipeSpritePosVector; }
             set {  pipeSpritePosVector = value; }
         }
+        public Vector2 BottomPipeSpritePosVector
+        {
+			get { return bottomPipeSpritePosVector; }
+			set { bottomPipeSpritePosVector = value; }
+		}
 
         //initialize variables
-        public Pipes(int x, int topPipeY, int width, int height) {
+        public Pipes(int x, int topPipeY, int width, int height, int pipeSpacing) {
              this.x=x;
              this.topPipeY=topPipeY; 
              this.width = width;
              this.height = height;
+             this.pipeSpacing=pipeSpacing;
              distanceBetweenPipes = randomNum.Next(60,70);
              bottomPipeY = topPipeY + height+ distanceBetweenPipes;
              topPipe = new Rectangle(x,topPipeY,width,height);
@@ -57,6 +67,7 @@ namespace FlappyBirdCSharp
              
              
         }
+       
 
 
     }
