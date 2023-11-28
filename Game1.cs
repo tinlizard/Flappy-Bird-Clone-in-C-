@@ -34,25 +34,25 @@ namespace FlappyBirdCSharp
   
         private Texture2D bottomPipeSprite;
         private Texture2D topPipeSprite;
-		private Vector2 topPipeSpriteVector;
-		private Vector2 bottomPipeSpriteVector;
+	private Vector2 topPipeSpriteVector;
+	private Vector2 bottomPipeSpriteVector;
 
         private Pipes topPipe;
         private Pipes bottomPipe;
-		private Rectangle topPipeRect;
-		private Rectangle bottomPipeRect;
-		private List<Pipes> topPipesList;
+	private Rectangle topPipeRect;
+	private Rectangle bottomPipeRect;
+	private List<Pipes> topPipesList;
         private List<Pipes> bottomPipesList;
         private List<Texture2D> topPipeTexturesList;
         private List<Texture2D> bottomPipeTexturesList;
         private bool isIntersecting = false;
         private const int numberOfPipes = 10;
 
-		private int initialXPosition = 295; // Starting X position for the first pipe
-		private const int pipeSpacing = 200; // Space between each pipe
-		private const int pipeStartPosition = 295;
+	private int initialXPosition = 295; // Starting X position for the first pipe
+	private const int pipeSpacing = 200; // Space between each pipe
+	private const int pipeStartPosition = 295;
 
-		protected bool Collide()
+	protected bool Collide()
         {
             for(int i=0; i<sourceRectangles.Length; i++)
             {
@@ -127,7 +127,7 @@ namespace FlappyBirdCSharp
             spritePos.Y += gravity;
 
 
-			Collide();
+	    Collide();
 
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -184,9 +184,6 @@ namespace FlappyBirdCSharp
 					pipe.PipeSpritePosVector = new Vector2(pipeStartPosition, pipe.BottomPipeSpritePosVector.Y);
 				}
 			}
-
-
-			
 
 
 			//call the updatePipeLocation method from the Pipes class in Pipes.cs
