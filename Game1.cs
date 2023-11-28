@@ -95,8 +95,8 @@ namespace FlappyBirdCSharp
          
 
             //load pipe sprite
-			topPipeSprite = Content.Load<Texture2D>("top_pipe_green");
-			bottomPipeSprite = Content.Load<Texture2D>("pipe-green");
+	    topPipeSprite = Content.Load<Texture2D>("top_pipe_green");
+	    bottomPipeSprite = Content.Load<Texture2D>("pipe-green");
 
             topPipesList = new List<Pipes>();
             bottomPipesList = new List<Pipes>(); 
